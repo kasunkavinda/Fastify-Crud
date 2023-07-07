@@ -1,1 +1,1 @@
-This is sample crud application using Fastify
+This is sample crud application using Fastify.
