@@ -1,4 +1,4 @@
-const { dogs } = require('../Items')
+const { getAllItems, getSingleItem, postSingleItem, putSingleItem, deleteSingleItem } = require('../controllers/items')
 
 // Item schema
 const CommonItemProp = {
@@ -18,7 +18,8 @@ const getItemOpts = {
                 items: CommonItemProp
             }
         }
-    }
+    },
+    handler: getAllItems
 }
 
 // Options for get single item
@@ -27,26 +28,72 @@ const getSingleItemOpts = {
         response: {
             200: CommonItemProp
         }
-    }
+    },
+    handler: getSingleItem
+}
+
+// Options for post single item
+const postItemOpts = {
+    schema: {
+        body: {
+            type: 'object',
+            required: ['name'],
+            properties: {
+                name: { type: 'string' }
+            }
+        },
+        response: {
+            201: {
+                type: 'array',
+                items: CommonItemProp
+            }
+        }
+    },
+    handler: postSingleItem
+}
+
+// Options for put single item
+const putItemOpts = {
+    schema: {
+        response: {
+            200: {
+                type: 'array',
+                items: CommonItemProp
+            }
+        }
+    },
+    handler: putSingleItem
+}
+
+// Options for delete single item
+const deleteItemOpts = {
+    schema: {
+        response: {
+            200: {
+                type: 'array',
+                item: CommonItemProp
+            }
+        }
+    },
+    handler: deleteSingleItem
 }
 
 const itemRouter = (fastify, options, done) => {
 
     // Get single item
-    fastify.get('/items/:id', getSingleItemOpts, (req, reply) => {
-        console.log('kasun inside method')
-        const { id } = req.params
-
-        const newArr = dogs.find((item) => item.id === id)
-        console.log('kasun', newArr)
-        reply.send(newArr)
-    })
+    fastify.get('/items/:id', getSingleItemOpts)
 
     // Get all items
-    fastify.get('/items', getItemOpts, (req, reply) => {
-        console.log('first', dogs)
-        reply.send(dogs)
-    })
+    fastify.get('/items', getItemOpts)
+
+    // Post single item
+    fastify.post('/item', postItemOpts)
+
+    // Put single item
+    fastify.put('/item/:id', putItemOpts)
+
+    // Delete single item
+    fastify.delete('/item/:id', deleteItemOpts)
 
     done()
 
